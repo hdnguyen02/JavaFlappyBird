@@ -5,38 +5,23 @@ import com.almasb.fxgl.app.scene.MenuType;
 import com.almasb.fxgl.dsl.FXGL;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.Pane;
-import javafx.scene.text.Font;
 import javafx.scene.text.Text;
 
-
 public class FinishMenu extends FXGLMenu {
-
     private final Helper.HelperImage tableView;
     private final Helper.HelperImage replayBtn;
     private final Helper.HelperImage gameOver;
     private final Helper.HelperImage homeBtn;
 
-    private final Text textScore = new Text();
-    private final Text textTopScore = new Text();
-    private final Text score = new Text();
-    private final Text topScore = new Text();
+    private final TextMove textScoreMove = new TextMove("- SCORE -",240,true);
+    private final TextMove textTopScoreMove = new TextMove("- TOP 1 -",340,false);
+    private TextMove scoreMove;
+    private TextMove topScoreMove;
 
     private double yTable;
     private double yReplayBtn;
     private double yGameOver;
     private double yHomeBtn;
-
-    private double xTextScore;
-    private double xTextTopScore;
-    private double xScore;
-    private double xTopScore;
-
-
-    private double xEndTextScore;
-    private double xEndScore;
-    private double xEndTextTopScore;
-    private double xEndTopScore;
-
     private boolean tableDone = false;
 
     public FinishMenu() {
@@ -47,25 +32,13 @@ public class FinishMenu extends FXGLMenu {
         gameOver = new Helper.HelperImage("image/gameOver.png",6);
         homeBtn = new Helper.HelperImage("image/btnHome.png",5);
 
-        Font fontTopScore = Font.loadFont(String.valueOf(getClass().getResource("font/font-result.ttf")), 40);
 
-        textScore.setFont(fontTopScore);
-        textTopScore.setFont(fontTopScore);
-        score.setFont(fontTopScore);
-        topScore.setFont(fontTopScore);
-
-
-        // event
         replayBtn.getImageView().setOnMouseClicked((MouseEvent e) -> fireNewGame());
-
         homeBtn.getImageView().setOnMouseClicked((MouseEvent e) -> getController().gotoMainMenu());
-
-
 
         contentRoot.getChildren().addAll(tableView.getImageView(), replayBtn.getImageView());
         contentRoot.getChildren().addAll(gameOver.getImageView(),homeBtn.getImageView());
-        contentRoot.getChildren().addAll(textScore,score,textTopScore,topScore);
-
+        contentRoot.getChildren().addAll(textScoreMove.getSurface(),textTopScoreMove.getSurface());
     }
 
     @Override
@@ -86,38 +59,11 @@ public class FinishMenu extends FXGLMenu {
             }
         }
         else {
-            if (xTextScore < xEndTextScore) {
-                textScore.setX(xTextScore);
-                xTextScore+=8;
-            }
-            else {
-                textScore.setX(xEndTextScore);
-            }
-            if (xScore < xEndScore ) {
-                score.setX(xScore);
-                xScore+=8;
-            }
-            else {
-                score.setX(xEndScore);
-            }
-
-            if (xTextTopScore > xEndTextTopScore) {
-                textTopScore.setX(xTextTopScore);
-                xTextTopScore-=8;
-            }
-            else {
-                textTopScore.setX(xEndTextTopScore);
-            }
-
-            if (xTopScore > xEndTopScore) {
-                topScore.setX(xTopScore);
-                xTopScore-=8;
-            }
-            else {
-                topScore.setX(xEndTopScore);
-            }
+            textScoreMove.move();
+            textTopScoreMove.move();
+            scoreMove.move();
+            topScoreMove.move();
         }
-
             if (yReplayBtn > endYReplayBtn) {
                 replayBtn.getImageView().setY(yReplayBtn);
                 yReplayBtn-=6;
@@ -134,47 +80,73 @@ public class FinishMenu extends FXGLMenu {
             }
     }
 
+    private static class TextMove {
+        private final double xCenter; // x sau khi move đến.
+        private double xMove;
+        private final Text surface;
+        private final boolean isLeftRight;
+
+        private TextMove(String text,int y,boolean isLeftRight) {
+            surface = new Text();
+            surface.setText(text);
+            surface.setFont(Helper.getFont("font/fontScore.ttf", 42));
+            xCenter = FXGL.getAppWidth() / 2f - surface.getLayoutBounds().getWidth() / 2f;
+            this.isLeftRight = isLeftRight;
+
+            if (isLeftRight){
+                xMove = - surface.getLayoutBounds().getWidth();
+            }
+            else{
+                xMove = FXGL.getAppWidth() + surface.getLayoutBounds().getWidth();
+            }
+
+            surface.setX(xMove);
+            surface.setY(y);
+        }
+
+        public Text getSurface(){
+            return surface;
+        }
+
+        public void move() {
+            if(isLeftRight){
+                moveLeftRight();
+            }
+            else {
+                moveRightLeft();
+            }
+        }
+        private void moveLeftRight(){
+            if (xMove < xCenter) {
+                surface.setX(xMove);
+                xMove+=10;
+            }
+            else {
+                surface.setX(xCenter);
+            }
+        }
+
+        private void moveRightLeft(){
+            if (xMove > xCenter) {
+                surface.setX(xMove);
+                xMove-=10;
+            }
+            else {
+                surface.setX(xCenter);
+            }
+        }
+    }
+
     @Override
     public void onCreate() {
         super.onCreate();
-
-        System.out.println(FXGL.getWorldProperties().getInt("score"));
-
-
-        textScore.setText("- SCORE -");
-        score.setText(String.valueOf(FXGL.getWorldProperties().getInt("score")));
-        textTopScore.setText("< TOP SCORE >");
-        topScore.setText(String.valueOf(FXGL.getWorldProperties().getInt("topScore")));
-
-
-        xEndTextScore = getAppWidth() / 2f - textScore.getLayoutBounds().getWidth() / 2;
-        xEndScore = getAppWidth() / 2f - score.getLayoutBounds().getWidth() / 2;
-        xEndTextTopScore = getAppWidth() / 2f - textTopScore.getLayoutBounds().getWidth() / 2;
-        xEndTopScore = getAppWidth() / 2f - topScore.getLayoutBounds().getWidth() / 2;
-
-        textScore.setY(240);
-        score.setY(280);
-        textTopScore.setY(320);
-        topScore.setY(360);
-
-        xTextScore = -textScore.getLayoutBounds().getWidth();
-        xScore = -score.getLayoutBounds().getWidth();
-        xTextTopScore = getAppHeight();
-        xTopScore = getAppHeight();
-
-        textScore.setX(xScore);
-        score.setX(xScore);
-        textTopScore.setX(xTextTopScore);
-        topScore.setX(xTopScore);
-
-
-        textScore.setX(-textScore.getLayoutBounds().getWidth());
-
-
         tableDone = false;
+        scoreMove = new TextMove(String.valueOf(FXGL.getWorldProperties().getInt("score")),300,true);
+        topScoreMove = new TextMove(String.valueOf(FXGL.getWorldProperties().getInt("topScore")),400,true);
+        getContentRoot().getChildren().addAll(scoreMove.getSurface(),topScoreMove.getSurface());
+
         yTable = -tableView.getHeight();
         tableView.setCenterX(getAppWidth(),yTable);
-
 
         yReplayBtn = getAppHeight() - replayBtn.getHeight();
         replayBtn.setCenterX(getAppWidth() + 120,yReplayBtn);
@@ -184,13 +156,5 @@ public class FinishMenu extends FXGLMenu {
 
         yGameOver = -gameOver.getHeight();
         gameOver.setCenterX(getAppWidth(),yGameOver);
-
-
-
-
-
-
-
-
     }
 }

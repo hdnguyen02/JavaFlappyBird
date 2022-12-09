@@ -15,7 +15,7 @@ import javafx.scene.text.Text;
 import org.jetbrains.annotations.NotNull;
 import java.util.*;
 import static com.almasb.fxgl.dsl.FXGL.*;
-import static com.almasb.fxgl.dsl.FXGL.getPhysicsWorld;
+
 
 public class App extends GameApplication {
     private Entity bird;
@@ -53,6 +53,7 @@ public class App extends GameApplication {
     @Override
     protected void initGameVars(Map<String, Object> vars) {
         vars.put("score", 0);
+        vars.put("isPlayMusic",true);
     }
     @Override
     public void onUpdate(double tpf) {
@@ -122,10 +123,11 @@ public class App extends GameApplication {
         if (isPlay){
             FXGL.getAudioPlayer().playSound(impactSound);
             FXGL.getAudioPlayer().playSound(dieSound);
+            getGameScene().removeUINode(uiScore);
             rangeTop();
         }
         this.isPlay = false;
-        getGameScene().removeUINode(uiScore);
+
     }
 
     private void rangeTop(){

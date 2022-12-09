@@ -11,7 +11,6 @@ public class BirdComponent extends Component {
      private double movement = 0;
      private final Sound jumpSound = getAssetLoader().loadSound(Objects.requireNonNull(getClass().getResource("sound/jump.wav")));
 
-
      @Override
      public void onUpdate(double tpf) {
           this.movement += BirdComponent.GRAVITY;

@@ -4,6 +4,7 @@ import com.almasb.fxgl.audio.Sound;
 import com.almasb.fxgl.dsl.FXGL;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
+import javafx.scene.text.Font;
 
 import java.io.BufferedReader;
 import java.io.FileReader;
@@ -14,9 +15,14 @@ import java.util.Objects;
 
 public class Helper {
 
+    public static Font getFont(String path,int size) {
+        return Font.loadFont(String.valueOf(App.class.getResource(path)), size);
+    }
+
     public static Sound getSound(String path) {
         return FXGL.getAssetLoader().loadSound(Objects.requireNonNull(App.class.getResource(path)));
     }
+
 
     public static String getTopScore(){
         String topScore = null;
@@ -47,6 +53,7 @@ public class Helper {
         private final ImageView view;
         private final  Image image;
         private final double scale;
+
 
         public HelperImage(String path,double scale){
            image = new Image(String.valueOf(getClass().getResource(path)));
