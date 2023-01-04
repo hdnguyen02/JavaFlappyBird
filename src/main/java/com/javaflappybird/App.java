@@ -23,14 +23,14 @@ import static com.almasb.fxgl.dsl.FXGL.*;
 
 public class App extends GameApplication {
     private Entity bird;
-    private Floor controlFloor;
-    private Pipe controlPipe;
+    private FloorControl controlFloor;
+    private PipeControl controlPipe;
     private Sound dieSound;
     private Sound impactSound;
-    private Text uiScore;
+    private Text uiScore;  // không đặt bên trong UI ( vì có 2 fucntion cần sử dụng )
     private boolean isPlay = true;
 
-    @Override
+    @Override   // thiết lập cài đặt
     protected void initSettings(GameSettings settings) {
         settings.setWidth(500);
         settings.setHeight(700);
@@ -54,16 +54,19 @@ public class App extends GameApplication {
     }
 
 
-    @Override
+    @Override  // đặt biến vào trong này.
     protected void initGameVars(Map<String, Object> vars) {
         vars.put("score", 0);
         vars.put("isPlayMusic",true);
     }
-    @Override
+    @Override  // sử dụng hàm này để update view.
     public void onUpdate(double tpf) {
         if (isPlay) {
+            if (bird.getY() <= 0) {
+                finishGame();
+            }
             controlFloor.onUpdate();
-            controlPipe.onUpdate(getGameWorld());
+            controlPipe.onUpdate(getGameWorld(),true);
             getWorldProperties().setValue("score",controlPipe.getScore());
         }
 
@@ -74,19 +77,20 @@ public class App extends GameApplication {
         }
     }
 
-    @Override
+    @Override  // khai báo entity game trong này
     protected void initGame() {
         getGameWorld().addEntityFactory(new GameEntityFactory());
-        spawn("background",0,0);
+        spawn("background",0,0);  // ( name factory, x, y
         bird = spawn("bird", 100, 0);
-        controlFloor = new Floor();
-        controlPipe = new Pipe();
+        controlFloor = new FloorControl();
+        controlPipe = new PipeControl();
+
         dieSound = Helper.getSound("sound/die.wav");
         impactSound = Helper.getSound("sound/collide.wav");
         isPlay = true;
     }
 
-    @Override
+    @Override  //  hàm sử lý lý input ( chuộc, bàn phím )
     protected void initInput() {
         onKeyDown(KeyCode.SPACE, () -> {
             if (isPlay) {
@@ -124,16 +128,16 @@ public class App extends GameApplication {
         });
     }
 
-    private void finishGame(){
-        if (isPlay){
+    private void finishGame() { // hàm tự định nghĩa
+        if (isPlay) {
             FXGL.getAudioPlayer().playSound(impactSound);
             FXGL.getAudioPlayer().playSound(dieSound);
             getGameScene().removeUINode(uiScore);
             rangeTop();
         }
-        this.isPlay = false;
+            this.isPlay = false;
+        }
 
-    }
 
     private void rangeTop(){
         int topScore = Integer.parseInt(Helper.getTopScore());
@@ -145,7 +149,7 @@ public class App extends GameApplication {
         getWorldProperties().setValue("topScore",topScore);
     }
 
-    @Override
+    @Override  // khai báo, sử lý liên quan đến UI
     protected void initUI() {
         uiScore = new Text();
         uiScore.setTranslateX(50);
@@ -153,7 +157,7 @@ public class App extends GameApplication {
 
         Font fontScore = Font.loadFont(String.valueOf(getClass().getResource("font/fontScore.ttf")),48);
         uiScore.setFont(fontScore);
-        uiScore.textProperty().bind(getWorldProperties().intProperty("score").asString());
+        uiScore.textProperty().bind(getWorldProperties().intProperty("score").asString()); // gán vào cho 1 cái biến
         getGameScene().addUINode(uiScore); // add to the scene graph
     }
 

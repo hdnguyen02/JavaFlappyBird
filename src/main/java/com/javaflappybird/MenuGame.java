@@ -3,10 +3,16 @@ package com.javaflappybird;
 import com.almasb.fxgl.app.scene.FXGLMenu;
 import com.almasb.fxgl.app.scene.MenuType;
 import com.almasb.fxgl.dsl.FXGL;
+import javafx.event.ActionEvent;
+import javafx.event.EventHandler;
+import javafx.scene.control.Button;
+import javafx.scene.control.Dialog;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.paint.Color;
 import javafx.scene.text.Text;
+import javafx.stage.Popup;
+
 import java.util.Objects;
 
 /**
@@ -21,6 +27,7 @@ public class MenuGame extends FXGLMenu {
         var children = getContentRoot().getChildren();
         textTopScore.setFont(Helper.getFont("font/fontScore.ttf", 48));
         textTopScore.setFill(Color.DARKBLUE);
+
 
         var backgroundView = new ImageView(String.valueOf(getClass().getResource("image/background.png")));
         backgroundView.setFitWidth(1260);
@@ -56,6 +63,8 @@ public class MenuGame extends FXGLMenu {
         children.addAll(soundButton.getImageView(),titleView.getImageView());
         children.addAll(textTopScore);
     }
+
+    //
 
     @Override
     public void onCreate() {

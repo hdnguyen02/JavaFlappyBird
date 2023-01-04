@@ -8,7 +8,7 @@ import static com.almasb.fxgl.dsl.FXGL.spawn;
  * @author hdnguyen7702
  * */
 
-public class Floor {
+public class FloorControl {
     private final Entity floor01;
     private final Entity floor02;
     private final Entity floor03;
@@ -18,8 +18,8 @@ public class Floor {
 
     private double xFloor;
 
-    public Floor(){
-        int zIndex = 10;
+    public FloorControl(){
+        int zIndex = 10; // cao hơn pipe ( pipe= 5 )
         xFloor = 0;
 
         floor01 = spawn("floor",0f,getAppHeight() - height);
@@ -31,7 +31,7 @@ public class Floor {
         floor03.getViewComponent().setZIndex(zIndex);
     }
 
-    public void onUpdate(){
+    public void onUpdate(){  // gọi hàm này trong update App
         floor01.setX(xFloor);
         floor02.setX(xFloor + width);
         floor03.setX(xFloor + 2 * width);

@@ -20,10 +20,14 @@ public class BirdComponent extends Component {
           this.movement += BirdComponent.GRAVITY;
           double newY = entity.getY() + this.movement;
           entity.setY(newY);
+
+          // có thể thực hiện đập cánh chim trong này
      }
 
      public void jump(){
           this.movement = -BirdComponent.SPEED;
           getAudioPlayer().playSound(jumpSound);
      }
+
+
 }
