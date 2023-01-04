@@ -5,6 +5,10 @@ import com.almasb.fxgl.entity.component.Component;
 import java.util.Objects;
 import static com.almasb.fxgl.dsl.FXGL.*;
 
+/**
+ * @author hdnguyen7702
+ * */
+
 public class BirdComponent extends Component {
      private static final double GRAVITY = 0.06;
      private static final double SPEED = 2.5;

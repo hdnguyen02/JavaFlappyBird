@@ -1,5 +1,9 @@
 package com.javaflappybird;
 
+/**
+ * @author hdnguyen7702
+ * */
+
 import com.almasb.fxgl.app.scene.FXGLMenu;
 import com.almasb.fxgl.app.scene.MenuType;
 import com.almasb.fxgl.dsl.FXGL;
@@ -7,14 +11,15 @@ import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.Pane;
 import javafx.scene.text.Text;
 
+
 public class FinishMenu extends FXGLMenu {
     private final Helper.HelperImage tableView;
     private final Helper.HelperImage replayBtn;
     private final Helper.HelperImage gameOver;
     private final Helper.HelperImage homeBtn;
 
-    private final TextMove textScoreMove = new TextMove("- SCORE -",240,true);
-    private final TextMove textTopScoreMove = new TextMove("- TOP 1 -",340,false);
+    private TextMove textScoreMove;
+    private TextMove textTopScoreMove;
     private TextMove scoreMove;
     private TextMove topScoreMove;
 
@@ -33,12 +38,46 @@ public class FinishMenu extends FXGLMenu {
         homeBtn = new Helper.HelperImage("image/btnHome.png",5);
 
 
-        replayBtn.getImageView().setOnMouseClicked((MouseEvent e) -> fireNewGame());
-        homeBtn.getImageView().setOnMouseClicked((MouseEvent e) -> getController().gotoMainMenu());
+        replayBtn.getImageView().setOnMouseClicked((MouseEvent e) -> {
+            contentRoot.getChildren().removeAll(scoreMove.getSurface(),topScoreMove.getSurface());
+            contentRoot.getChildren().removeAll(textScoreMove.getSurface(),textTopScoreMove.getSurface());
+            fireNewGame();
+        });
+        homeBtn.getImageView().setOnMouseClicked((MouseEvent e) -> {
+            contentRoot.getChildren().removeAll(scoreMove.getSurface(),topScoreMove.getSurface());
+            contentRoot.getChildren().removeAll(textScoreMove.getSurface(),textTopScoreMove.getSurface());
+
+            getController().gotoMainMenu();
+        });
 
         contentRoot.getChildren().addAll(tableView.getImageView(), replayBtn.getImageView());
         contentRoot.getChildren().addAll(gameOver.getImageView(),homeBtn.getImageView());
-        contentRoot.getChildren().addAll(textScoreMove.getSurface(),textTopScoreMove.getSurface());
+
+    }
+
+    @Override
+    public void onCreate() {
+        super.onCreate();
+        tableDone = false;
+        scoreMove = new TextMove(String.valueOf(FXGL.getWorldProperties().getInt("score")),290,true);
+        topScoreMove = new TextMove(String.valueOf(FXGL.getWorldProperties().getInt("topScore")),400,true);
+        textScoreMove = new TextMove("- SCORE -",240,true);
+        textTopScoreMove = new TextMove("- TOP 1 -",340,false);
+
+        getContentRoot().getChildren().addAll(scoreMove.getSurface(),topScoreMove.getSurface());
+        getContentRoot().getChildren().addAll(textScoreMove.getSurface(),textTopScoreMove.getSurface());
+
+        yTable = -tableView.getHeight();
+        tableView.setCenterX(getAppWidth(),yTable);
+
+        yReplayBtn = getAppHeight() - replayBtn.getHeight();
+        replayBtn.setCenterX(getAppWidth() + 120,yReplayBtn);
+
+        yHomeBtn = getAppHeight() - homeBtn.getHeight();
+        homeBtn.setCenterX(getAppWidth() - 140,yHomeBtn);
+
+        yGameOver = -gameOver.getHeight();
+        gameOver.setCenterX(getAppWidth(),yGameOver);
     }
 
     @Override
@@ -137,24 +176,5 @@ public class FinishMenu extends FXGLMenu {
         }
     }
 
-    @Override
-    public void onCreate() {
-        super.onCreate();
-        tableDone = false;
-        scoreMove = new TextMove(String.valueOf(FXGL.getWorldProperties().getInt("score")),300,true);
-        topScoreMove = new TextMove(String.valueOf(FXGL.getWorldProperties().getInt("topScore")),400,true);
-        getContentRoot().getChildren().addAll(scoreMove.getSurface(),topScoreMove.getSurface());
 
-        yTable = -tableView.getHeight();
-        tableView.setCenterX(getAppWidth(),yTable);
-
-        yReplayBtn = getAppHeight() - replayBtn.getHeight();
-        replayBtn.setCenterX(getAppWidth() + 120,yReplayBtn);
-
-        yHomeBtn = getAppHeight() - homeBtn.getHeight();
-        homeBtn.setCenterX(getAppWidth() - 140,yHomeBtn);
-
-        yGameOver = -gameOver.getHeight();
-        gameOver.setCenterX(getAppWidth(),yGameOver);
-    }
 }

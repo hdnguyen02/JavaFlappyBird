@@ -16,6 +16,10 @@ import org.jetbrains.annotations.NotNull;
 import java.util.*;
 import static com.almasb.fxgl.dsl.FXGL.*;
 
+/**
+ * @author hdnguyen7702
+ * */
+
 
 public class App extends GameApplication {
     private Entity bird;
@@ -62,6 +66,7 @@ public class App extends GameApplication {
             controlPipe.onUpdate(getGameWorld());
             getWorldProperties().setValue("score",controlPipe.getScore());
         }
+
         else {
             if (bird.getY() > getAppHeight()) {
                 getGameController().gotoGameMenu();
